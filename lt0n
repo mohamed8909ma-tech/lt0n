@@ -1,4 +1,4 @@
-fach kitst3ml had script :local Players = game:GetService("Players")
+local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local GameRules = require(game.ReplicatedStorage.Modules.GameRules)
 
