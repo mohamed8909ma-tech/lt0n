@@ -1,5 +1,6 @@
-local Players = game:GetService("Players")
+fach kitst3ml had script :local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local GameRules = require(game.ReplicatedStorage.Modules.GameRules)
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "AutoATMHack"
@@ -17,7 +18,7 @@ local theme = {
 }
 
 local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 220, 0, 80)
+main.Size = UDim2.new(0, 220, 0, 100)
 main.Position = UDim2.new(0.02, 0, 0.35, 0)
 main.BackgroundColor3 = theme.bg
 main.BorderSizePixel = 0
@@ -31,7 +32,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -10, 0, 28)
 title.Position = UDim2.new(0, 10, 0, 4)
 title.BackgroundTransparency = 1
-title.Text = "edited by peace"
+title.Text = "Auto ATM Hack"
 title.TextColor3 = theme.accent
 title.TextSize = 14
 title.Font = Enum.Font.GothamBold
@@ -50,24 +51,15 @@ local toggleLbl = Instance.new("TextLabel")
 toggleLbl.Size = UDim2.new(1, -50, 1, 0)
 toggleLbl.Position = UDim2.new(0, 10, 0, 0)
 toggleLbl.BackgroundTransparency = 1
-toggleLbl.Text = "Fast Interact"
+toggleLbl.Text = "Auto-Skip Hack"
 toggleLbl.TextColor3 = theme.text
 toggleLbl.TextSize = 13
 toggleLbl.Font = Enum.Font.Gotham
 toggleLbl.TextXAlignment = Enum.TextXAlignment.Left
 toggleLbl.Parent = toggleBg
 
-local autoOn = true
-
-local function apply()
-    for _, prompt in ipairs(game:GetDescendants()) do
-        if prompt:IsA("ProximityPrompt") and prompt.HoldDuration > 0.3 then
-            prompt.HoldDuration = 0.3
-        end
-    end
-end
-
-apply()
+local autoHackOn = true
+GameRules.disableHacking = autoHackOn
 
 local sw = Instance.new("Frame")
 sw.Size = UDim2.new(0, 36, 0, 18)
@@ -87,10 +79,13 @@ Instance.new("UICorner", kb).CornerRadius = UDim.new(1, 0)
 
 toggleBg.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        autoOn = not autoOn
-        if autoOn then apply() end
-        sw.BackgroundColor3 = autoOn and theme.on or theme.off
-        kb.Position = autoOn and UDim2.new(0, 20, 0, 2) or UDim2.new(0, 2, 0, 2)
+        autoHackOn = not autoHackOn
+        GameRules.disableHacking = autoHackOn
+        sw.BackgroundColor3 = autoHackOn and theme.on or theme.off
+        kb.Position = autoHackOn and UDim2.new(0, 20, 0, 2) or UDim2.new(0, 2, 0, 2)
+        task.wait()
+        statusLbl.Text = autoHackOn and "Status: ON (hacks auto-complete)" or "Status: OFF"
+        statusLbl.TextColor3 = autoHackOn and theme.on or theme.off
     end
 end)
 
@@ -109,15 +104,20 @@ closeBtn.MouseButton1Click:Connect(function()
     main.Visible = not main.Visible
 end)
 
+local statusLbl = Instance.new("TextLabel")
+statusLbl.Size = UDim2.new(1, -12, 0, 20)
+statusLbl.Position = UDim2.new(0, 6, 0, 70)
+statusLbl.BackgroundTransparency = 1
+statusLbl.Text = "Status: ON (hacks auto-complete)"
+statusLbl.TextColor3 = theme.on
+statusLbl.TextSize = 10
+statusLbl.Font = Enum.Font.Gotham
+statusLbl.TextXAlignment = Enum.TextXAlignment.Center
+statusLbl.Parent = main
+
 LocalPlayer.CharacterAdded:Connect(function()
     task.wait(1)
-    if autoOn then apply() end
+    GameRules.disableHacking = autoHackOn
 end)
 
-game.DescendantAdded:Connect(function(desc)
-    if autoOn and desc:IsA("ProximityPrompt") and desc.HoldDuration > 0.3 then
-        desc.HoldDuration = 0.3
-    end
-end)
-
-print("edited by peace - fast mode")
+print("edited by pece")
